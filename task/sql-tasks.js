@@ -477,10 +477,11 @@ async function task_1_22(db) {
         p.ProductName as "ProductName",
         PricePerItem as "PricePerItem"
     FROM
-        (SELECT  
-		    CompanyName, 
+        (
+        SELECT  
+		    Customers.CompanyName, 
 		    Customers.CustomerID, 
-		    MAX(OrderDetails.UnitPrice) AS PricePerItem
+		    MAX(OrderDetails.UnitPrice) AS "PricePerItem"
 	    FROM Customers 
 	    JOIN Orders ON Customers.CustomerID = Orders.CustomerID 
 	    JOIN OrderDetails ON Orders.OrderID = OrderDetails.OrderID 
