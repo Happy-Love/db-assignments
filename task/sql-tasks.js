@@ -485,7 +485,7 @@ async function task_1_22(db) {
 	    FROM Customers 
 	    JOIN Orders ON Customers.CustomerID = Orders.CustomerID 
 	    JOIN OrderDetails ON Orders.OrderID = OrderDetails.OrderID 
-	    GROUP BY CompanyName) as PriceTable
+	    GROUP BY CompanyName, CustomerID) as PriceTable
     JOIN Orders ON PriceTable.CustomerID = Orders.CustomerID 
     JOIN OrderDetails ON PricePerItem = OrderDetails.UnitPrice AND Orders.OrderID = OrderDetails.OrderID 
     JOIN Products p ON p.ProductID = OrderDetails.ProductID 
