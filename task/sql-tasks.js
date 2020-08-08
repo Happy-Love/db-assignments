@@ -369,7 +369,7 @@ async function task_1_17(db) {
 	    CategoryName as "CategoryName",
 	    avg(UnitPrice) as "AvgPrice"
     FROM Products p
-    JOIN categories c ON c.CategoryID=p.CategoryID
+    JOIN Categories c ON c.CategoryID=p.CategoryID
     GROUP BY 1
     ORDER BY 2 DESC
     `);
@@ -455,7 +455,7 @@ async function task_1_21(db) {
     SELECT  
 	    OrderID as "OrderID",
 	    SUM(UnitPrice*Quantity) AS "Maximum Purchase Amount, $"
-    FROM Orderdetails 
+    FROM OrderDetails 
     GROUP BY OrderID
     ORDER BY 2 desc 
     LIMIT 1
