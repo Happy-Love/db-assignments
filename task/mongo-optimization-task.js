@@ -277,6 +277,14 @@ async function task_3_1(db) {
                     {
                         "versions.initiativeId" : ObjectId("58af4da0b310d92314627290")
                     }
+                },
+                {
+                    $project: {
+                        value: 1,
+                        label: 1,
+                        definition: 1,
+                        'versions.definition': 1,
+                    }
                 },                   
                 { 
                     $match: { $expr: { $eq: [ "$value",  "$$crit_value" ] } }
