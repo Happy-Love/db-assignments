@@ -124,15 +124,14 @@ async function task_1_5(db) {
  *
  */
 async function task_1_6(db) {
-    // (inner join)
     let result = await db.query(`
     SELECT 
 	    p.ProductName as "ProductName",
         c.CategoryName as "CategoryName",
         s.CompanyName as "SupplierCompanyName"
     FROM Products p
-    JOIN Categories c ON p.CategoryID=c.CategoryID 
-    JOIN Suppliers s ON p.SupplierID=s.SupplierID
+    INNER JOIN Categories c ON p.CategoryID=c.CategoryID 
+    INNER JOIN Suppliers s ON p.SupplierID=s.SupplierID
     ORDER BY ProductName
     `);
     return result[0];
@@ -150,13 +149,13 @@ async function task_1_6(db) {
  */
 async function task_1_7(db) {
     let result = await db.query(`
-    SELECT 
-	    r.EmployeeID as 'EmployeeId',
-	    CONCAT(r.FirstName,' ',r.LastName) as "FullName",
-	    COALESCE(CONCAT(e.FirstName,' ',e.LastName),'-') as "ReportsTo"
+    SELECT  
+	    e.EmployeeID as 'EmployeeId',
+	    CONCAT(e.FirstName,' ',e.LastName) as "FullName",
+	    COALESCE(CONCAT(r.FirstName,' ',r.LastName),'-') as "ReportsTo"
     FROM Employees e
-    RIGHT OUTER JOIN Employees r ON e.EmployeeID = r.ReportsTo
-    ORDER BY r.EmployeeID
+	LEFT OUTER JOIN Employees r ON r.EmployeeID = e.ReportsTo
+    ORDER BY e.EmployeeID
     `);
     return result[0];
 }
@@ -369,7 +368,7 @@ async function task_1_17(db) {
 	    CategoryName as "CategoryName",
 	    avg(UnitPrice) as "AvgPrice"
     FROM Products p
-    JOIN Categories c ON c.CategoryID=p.CategoryID
+    INNER JOIN Categories c ON c.CategoryID=p.CategoryID
     GROUP BY 1
     ORDER BY 2 DESC
     `);
@@ -411,8 +410,8 @@ async function task_1_19(db) {
         c.CompanyName as "CompanyName",
         SUM(od.UnitPrice * od.Quantity) as "TotalOrdersAmount, $"
     FROM Customers as c
-    JOIN Orders as o ON o.CustomerID = c.CustomerID
-    JOIN OrderDetails as od ON od.OrderID = o.OrderID
+    INNER JOIN Orders as o ON o.CustomerID = c.CustomerID
+    INNER JOIN OrderDetails as od ON od.OrderID = o.OrderID
     GROUP BY CustomerID
     HAVING \`TotalOrdersAmount, $\` > 10000 
     ORDER BY 3 DESC, 1
@@ -435,8 +434,8 @@ async function task_1_20(db) {
         CONCAT(e.FirstName, ' ', e.LastName ) as "Employee Full Name",
         SUM(od.UnitPrice * od.Quantity ) as "Amount, $"
     FROM Employees e 
-    JOIN Orders o ON e.EmployeeID = o.EmployeeID
-    JOIN OrderDetails od ON o.OrderID = od.OrderID
+    INNER JOIN Orders o ON e.EmployeeID = o.EmployeeID
+    INNER JOIN OrderDetails od ON o.OrderID = od.OrderID
     GROUP BY e.EmployeeID
     ORDER BY 3 DESC 
     LIMIT 1
@@ -483,12 +482,12 @@ async function task_1_22(db) {
 		    Customers.CustomerID, 
 		    MAX(OrderDetails.UnitPrice) AS "PricePerItem"
 	    FROM Customers 
-	    JOIN Orders ON Customers.CustomerID = Orders.CustomerID 
-	    JOIN OrderDetails ON Orders.OrderID = OrderDetails.OrderID 
+	    INNER JOIN Orders ON Customers.CustomerID = Orders.CustomerID 
+	    INNER JOIN OrderDetails ON Orders.OrderID = OrderDetails.OrderID 
 	    GROUP BY CompanyName, CustomerID) as PriceTable
-    JOIN Orders ON PriceTable.CustomerID = Orders.CustomerID 
-    JOIN OrderDetails ON PricePerItem = OrderDetails.UnitPrice AND Orders.OrderID = OrderDetails.OrderID 
-    JOIN Products p ON p.ProductID = OrderDetails.ProductID 
+    INNER JOIN Orders ON PriceTable.CustomerID = Orders.CustomerID 
+    INNER JOIN OrderDetails ON PricePerItem = OrderDetails.UnitPrice AND Orders.OrderID = OrderDetails.OrderID 
+    INNER JOIN Products p ON p.ProductID = OrderDetails.ProductID 
     ORDER BY PricePerItem DESC, CompanyName, ProductName;
     `); 
     return result[0];     
